@@ -54,6 +54,10 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     if (begin_word == end_word)
         return {begin_word};
 
+    if (word_list.find(end_word) == word_list.end()) {
+        return {};
+    }
+
     queue<vector<string>> q;
     q.push({begin_word});
     set<string> visited;
@@ -69,22 +73,26 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
             q.pop();
 
             for (const string& word : word_list) {
-                if (!visited.count(word) && is_adjacent(last_word, word)) {
+                if (visited.count(word)) continue;
+
+                if (is_adjacent(last_word, word)) {
                     vector<string> new_ladder = ladder;
                     new_ladder.push_back(word);
 
-                    if (word == end_word)
+                    if (word == end_word) 
                         return new_ladder;
+
                     q.push(new_ladder);
                     words_used_in_level.insert(word);
                 }
             }
         }
 
-        visited.insert(words_used_in_level.begin(), words_used_in_level.end());
+        for (const string& w : words_used_in_level)
+            visited.insert(w);
     }
 
-     return {};
+    return {};
 }
 
 void load_words(set<string>& word_list, const string& file_name) {
@@ -108,7 +116,7 @@ void print_word_ladder(const vector<string>& ladder) {
         for (size_t i = 0; i < ladder.size(); ++i) {
             cout << ladder[i];
             if (i != ladder.size() - 1) 
-                cout << " -> ";
+                cout << " ";
         }
         
         cout << endl;
