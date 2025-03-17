@@ -15,14 +15,13 @@ void error(string word1, string word2, string msg) {
 }
 
 bool edit_distance_within(const string& str1, const string& str2, int d) {
-      int len1 = str1.size();
-    int len2 = str2.size();
+    int len1 = str1.size(), len2 = str2.size();
 
     if (abs(len1 - len2) > d) 
         return false;
 
-    int i = 0;
-    int j = 0;
+    int i = 0
+    int j = 0
     int changes = 0;
 
     while (i < len1 && j < len2) {
@@ -31,20 +30,20 @@ bool edit_distance_within(const string& str1, const string& str2, int d) {
                 return false;
 
             if (len1 > len2) 
-                ++i;
+                ++i;     
             else if (len1 < len2) 
-                ++j;
-            else {
+                ++j; 
+            else { 
                 ++i; 
-                ++j;
-            }
-        } else { 
+                ++j; 
+            }         
+        } else {
             ++i; 
-            ++j; 
+            ++j;
         }
     }
 
-    return changes + abs(len1 - i) + abs(len2 - j) <= d;
+    return changes + (len1 - i) + (len2 - j) <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
@@ -71,9 +70,8 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
                     vector<string> new_ladder = ladder;
                     new_ladder.push_back(word);
                     
-                    if (word == end_word) {
+                    if (word == end_word)
                         return new_ladder;
-                    }
                     
                     ladder_queue.push(new_ladder);
                     level_visited.insert(word);
@@ -81,9 +79,8 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
             }
         }
         
-        for (const string& w : level_visited) {
+        for (const string& w : level_visited)
             visited.insert(w);
-        }
     }
     
     return {}; 
