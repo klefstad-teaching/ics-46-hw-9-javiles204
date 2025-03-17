@@ -14,36 +14,18 @@ void error(string word1, string word2, string msg) {
 }
 
 bool edit_distance_within(const string& str1, const string& str2, int d) {
-    int len1 = str1.size();
-    int len2 = str2.size();
-
-    if (abs(len1 - len2) > d) 
+    if (str1.size() != str2.size()) 
         return false;
 
-    int i = 0;
-    int j = 0;
     int changes = 0;
 
-    while (i < len1 && j < len2) {
-        if (str1[i] != str2[j]) {
+    for (size_t i = 0; i < str1.size(); ++i) {
+        if (str1[i] != str2[i]) {
             if (++changes > d) 
                 return false;
-
-            if (len1 > len2) 
-                ++i;
-            else if (len1 < len2) 
-                ++j;
-            else {
-                ++i; 
-                ++j;
-            }
-        } else { 
-            ++i; 
-            ++j; 
         }
     }
-
-    return changes + abs(len1 - i) + abs(len2 - j) <= d;
+    return changes <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
@@ -52,6 +34,9 @@ bool is_adjacent(const string& word1, const string& word2) {
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
     if (begin_word == end_word)
+        return {};
+
+    if (!word_list.count(end_word))
         return {};
 
     queue<vector<string>> q;
