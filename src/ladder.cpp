@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
@@ -33,47 +34,41 @@ bool is_adjacent(const string& word1, const string& word2) {
 }
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
-    if (begin_word == end_word)
-        return {};
-
-    if (!word_list.count(end_word))
-        return {};
-
-    queue<vector<string>> q;
-    q.push({begin_word});
-    set<string> visited;
+    queue<vector<string>> ladder_queue;
+    ladder_queue.push({begin_word});
+    unordered_set<string> visited;
     visited.insert(begin_word);
-
-    while (!q.empty()) {
-        int level_size = q.size();
-        set<string> words_used_in_level;
-
-        while (level_size--) {
-            vector<string> ladder = q.front();
+    
+    while (!ladder_queue.empty()) {
+        int size = ladder_queue.size();
+        unordered_set<string> level_visited;
+        
+        for (int i = 0; i < size; i++) {
+            vector<string> ladder = ladder_queue.front();
+            ladder_queue.pop();
             string last_word = ladder.back();
-            q.pop();
-
+            
             for (const string& word : word_list) {
-                if (visited.count(word)) continue;
-
-                if (is_adjacent(last_word, word)) {
+                if (is_adjacent(last_word, word) && visited.find(word) == visited.end()) {
                     vector<string> new_ladder = ladder;
                     new_ladder.push_back(word);
-
-                    if (word == end_word) 
+                    
+                    if (word == end_word) {
                         return new_ladder;
-
-                    q.push(new_ladder);
-                    words_used_in_level.insert(word);
+                    }
+                    
+                    ladder_queue.push(new_ladder);
+                    level_visited.insert(word);
                 }
             }
         }
-
-        for (const string& w : words_used_in_level)
+        
+        for (const string& w : level_visited) {
             visited.insert(w);
+        }
     }
-
-    return {};
+    
+    return {}; 
 }
 
 void load_words(set<string>& word_list, const string& file_name) {
@@ -108,8 +103,7 @@ void print_word_ladder(const vector<string>& ladder) {
 #define my_assert(e) {cout << #e << ((e) ? " passed": " failed") << endl;}
 
 void verify_word_ladder() {
-    /*
-    tested and works properly; takes too long in autograder
+    //tested and works properly; takes too long in autograder
 
     set<string> word_list;
 
@@ -121,5 +115,4 @@ void verify_word_ladder() {
     my_assert(generate_word_ladder("work", "play", word_list).size() == 6);
     my_assert(generate_word_ladder("sleep", "awake", word_list).size() == 8);
     my_assert(generate_word_ladder("car", "cheat", word_list).size() == 4);
-    */
 }
