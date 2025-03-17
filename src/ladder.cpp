@@ -20,8 +20,8 @@ bool edit_distance_within(const string& str1, const string& str2, int d) {
     if (abs(len1 - len2) > d) 
         return false;
 
-    int i = 0
-    int j = 0
+    int i = 0;
+    int j = 0;
     int changes = 0;
 
     while (i < len1 && j < len2) {
