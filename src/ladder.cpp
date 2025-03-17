@@ -15,18 +15,36 @@ void error(string word1, string word2, string msg) {
 }
 
 bool edit_distance_within(const string& str1, const string& str2, int d) {
-    if (str1.size() != str2.size()) 
+      int len1 = str1.size();
+    int len2 = str2.size();
+
+    if (abs(len1 - len2) > d) 
         return false;
 
+    int i = 0;
+    int j = 0;
     int changes = 0;
 
-    for (size_t i = 0; i < str1.size(); ++i) {
-        if (str1[i] != str2[i]) {
+    while (i < len1 && j < len2) {
+        if (str1[i] != str2[j]) {
             if (++changes > d) 
                 return false;
+
+            if (len1 > len2) 
+                ++i;
+            else if (len1 < len2) 
+                ++j;
+            else {
+                ++i; 
+                ++j;
+            }
+        } else { 
+            ++i; 
+            ++j; 
         }
     }
-    return changes <= d;
+
+    return changes + abs(len1 - i) + abs(len2 - j) <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
@@ -103,7 +121,7 @@ void print_word_ladder(const vector<string>& ladder) {
 #define my_assert(e) {cout << #e << ((e) ? " passed": " failed") << endl;}
 
 void verify_word_ladder() {
-    //tested and works properly; takes too long in autograder
+    // tested and works properly; takes too long in autograder
 
     set<string> word_list;
 
